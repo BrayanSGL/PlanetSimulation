@@ -1,5 +1,5 @@
 from ast import While
-from turtle import distance
+from turtle import distance, update
 import pygame
 import math
 pygame.init()
@@ -13,6 +13,8 @@ YELLOW = (255, 255, 0)
 BLUE = (100, 149, 237)
 RED = (188, 39, 50)
 DARK_GREY = (80, 78, 81)
+
+FONT = pygame.font.SysFont('comicsans',16)
 
 
 class Planet:
@@ -38,6 +40,21 @@ class Planet:
     def draw(self, win):
         x = self.x*self.SCALE + WIDTH / 2
         y = self.y*self.SCALE + HEIGTH / 2
+
+        if len(self.orbit) > 2:
+            updated_points = []
+            for point in self.orbit:
+                x, y, = point
+                x = x * self.SCALE + WIDTH/2
+                y = y * self.SCALE + WIDTH/2
+                updated_points.append((x, y))
+
+            pygame.draw.lines(win, self.color, False, updated_points, 2)
+
+        if not self.sun:
+            distance_text = FONT.render(f'{round(self.distanca_to_sun/1000,1)}km',1,WHITE)
+            win.blit(distance_text,(x-distance_text.get_width()/2,y-distance_text.get_width()/2))
+
         pygame.draw.circle(win, self.color, (x, y), self.radius)
 
     def attraction(self, other):
